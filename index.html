@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExpenseFlow — Smart Expense Tracker</title>
+    <meta name="description"
+        content="Track your expenses effortlessly with ExpenseFlow. Beautiful dashboard, category insights, and smart filtering.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- ====== AUTH PAGE ====== -->
+    <div class="auth-page" id="auth-page">
+        <div class="auth-container">
+            <div class="auth-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <h1>ExpenseFlow</h1>
+                <p>Smart expense tracking, beautifully simple.</p>
+            </div>
+
+            <!-- Login Form -->
+            <div class="auth-card" id="login-card">
+                <h2>Welcome back</h2>
+                <p class="auth-subtitle">Sign in to your account</p>
+                <div class="auth-error hidden" id="login-error"></div>
+                <form id="login-form">
+                    <div class="form-group">
+                        <label for="login-username">Username</label>
+                        <input type="text" id="login-username" placeholder="Enter your username" required
+                            autocomplete="username" />
+                    </div>
+                    <div class="form-group">
+                        <label for="login-password">Password</label>
+                        <input type="password" id="login-password" placeholder="Enter your password" required
+                            autocomplete="current-password" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" id="login-btn">
+                        <span class="btn-text">Sign In</span>
+                        <span class="btn-spinner hidden" id="login-spinner"></span>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    Don't have an account? <button class="link-btn" id="show-register">Create one</button>
+                </p>
+            </div>
+
+            <!-- Register Form -->
+            <div class="auth-card hidden" id="register-card">
+                <h2>Create account</h2>
+                <p class="auth-subtitle">Start tracking your expenses</p>
+                <div class="auth-error hidden" id="register-error"></div>
+                <form id="register-form">
+                    <div class="form-group">
+                        <label for="reg-username">Username</label>
+                        <input type="text" id="reg-username" placeholder="Choose a username" required minlength="3"
+                            autocomplete="username" />
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-email">Email</label>
+                        <input type="email" id="reg-email" placeholder="your@email.com" required autocomplete="email" />
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password">Password</label>
+                        <input type="password" id="reg-password" placeholder="Min. 8 characters" required minlength="8"
+                            autocomplete="new-password" />
+                    </div>
+                    <div class="form-group">
+                        <label for="reg-password2">Confirm Password</label>
+                        <input type="password" id="reg-password2" placeholder="Repeat your password" required
+                            minlength="8" autocomplete="new-password" />
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full" id="register-btn">
+                        <span class="btn-text">Create Account</span>
+                        <span class="btn-spinner hidden" id="register-spinner"></span>
+                    </button>
+                </form>
+                <p class="auth-switch">
+                    Already have an account? <button class="link-btn" id="show-login">Sign in</button>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ====== MAIN APP (hidden until authenticated) ====== -->
+    <div class="app-wrapper hidden" id="app-wrapper">
+
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <div class="brand-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 2L2 7l10 5 10-5-10-5z" />
+                        <path d="M2 17l10 5 10-5" />
+                        <path d="M2 12l10 5 10-5" />
+                    </svg>
+                </div>
+                <span class="brand-name">ExpenseFlow</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <button class="nav-item active" data-view="dashboard" id="nav-dashboard">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7" rx="1" />
+                        <rect x="14" y="3" width="7" height="7" rx="1" />
+                        <rect x="3" y="14" width="7" height="7" rx="1" />
+                        <rect x="14" y="14" width="7" height="7" rx="1" />
+                    </svg>
+                    <span>Dashboard</span>
+                </button>
+                <button class="nav-item" data-view="expenses" id="nav-expenses">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="8" y1="6" x2="21" y2="6" />
+                        <line x1="8" y1="12" x2="21" y2="12" />
+                        <line x1="8" y1="18" x2="21" y2="18" />
+                        <line x1="3" y1="6" x2="3.01" y2="6" />
+                        <line x1="3" y1="12" x2="3.01" y2="12" />
+                        <line x1="3" y1="18" x2="3.01" y2="18" />
+                    </svg>
+                    <span>Expenses</span>
+                </button>
+                <button class="nav-item" data-view="analytics" id="nav-analytics">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="20" x2="18" y2="10" />
+                        <line x1="12" y1="20" x2="12" y2="4" />
+                        <line x1="6" y1="20" x2="6" y2="14" />
+                    </svg>
+                    <span>Analytics</span>
+                </button>
+                <button class="nav-item" data-view="reports" id="nav-reports">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    <span>Reports</span>
+                </button>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="budget-card">
+                    <span class="budget-label">Monthly Budget</span>
+                    <span class="budget-amount" id="sidebar-budget">₹0</span>
+                    <div class="budget-bar">
+                        <div class="budget-bar-fill" id="sidebar-budget-fill"></div>
+                    </div>
+                    <span class="budget-remaining" id="sidebar-budget-remaining">₹0 remaining</span>
+                </div>
+                <div class="user-menu">
+                    <span class="user-name" id="user-display-name">User</span>
+                    <button class="btn btn-ghost btn-sm" id="logout-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16"
+                            height="16">
+                            <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4" />
+                            <polyline points="16 17 21 12 16 7" />
+                            <line x1="21" y1="12" x2="9" y2="12" />
+                        </svg>
+                        Logout
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Mobile Header -->
+        <header class="mobile-header" id="mobile-header">
+            <button class="menu-toggle" id="menu-toggle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="6" x2="21" y2="6" />
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                    <line x1="3" y1="18" x2="21" y2="18" />
+                </svg>
+            </button>
+            <span class="mobile-brand">ExpenseFlow</span>
+            <button class="add-btn-mobile" id="add-btn-mobile">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+            </button>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+
+            <!-- ====== DASHBOARD VIEW ====== -->
+            <section class="view active" id="view-dashboard">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Dashboard</h1>
+                        <p class="view-subtitle" id="dashboard-greeting">Good evening! Here's your spending overview.
+                        </p>
+                    </div>
+                    <button class="btn btn-primary" id="add-expense-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="12" y1="5" x2="12" y2="19" />
+                            <line x1="5" y1="12" x2="19" y2="12" />
+                        </svg>
+                        Add Expense
+                    </button>
+                </div>
+
+                <!-- Summary Cards -->
+                <div class="summary-cards">
+                    <div class="card summary-card" id="card-total">
+                        <div class="card-icon card-icon-purple">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <span class="card-label">Total Spent</span>
+                            <span class="card-value" id="total-spent">₹0</span>
+                            <span class="card-sub" id="total-sub">This month</span>
+                        </div>
+                    </div>
+                    <div class="card summary-card" id="card-today">
+                        <div class="card-icon card-icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                <line x1="16" y1="2" x2="16" y2="6" />
+                                <line x1="8" y1="2" x2="8" y2="6" />
+                                <line x1="3" y1="10" x2="21" y2="10" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <span class="card-label">Today</span>
+                            <span class="card-value" id="today-spent">₹0</span>
+                            <span class="card-sub" id="today-count">0 transactions</span>
+                        </div>
+                    </div>
+                    <div class="card summary-card" id="card-avg">
+                        <div class="card-icon card-icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18" />
+                                <polyline points="17 6 23 6 23 12" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <span class="card-label">Daily Average</span>
+                            <span class="card-value" id="avg-spent">₹0</span>
+                            <span class="card-sub" id="avg-sub">Per day this month</span>
+                        </div>
+                    </div>
+                    <div class="card summary-card" id="card-top">
+                        <div class="card-icon card-icon-orange">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon
+                                    points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                            </svg>
+                        </div>
+                        <div class="card-info">
+                            <span class="card-label">Top Category</span>
+                            <span class="card-value" id="top-category">—</span>
+                            <span class="card-sub" id="top-category-amount">No data yet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <div class="card chart-card">
+                        <div class="card-header">
+                            <h3>Spending Trend</h3>
+                            <div class="chart-period-selector">
+                                <button class="period-btn active" data-period="week">Week</button>
+                                <button class="period-btn" data-period="month">Month</button>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trend-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card chart-card chart-card-sm">
+                        <div class="card-header">
+                            <h3>By Category</h3>
+                        </div>
+                        <div class="chart-container donut-container">
+                            <canvas id="category-chart"></canvas>
+                            <div class="donut-center" id="donut-center">
+                                <span class="donut-total-label">Total</span>
+                                <span class="donut-total-value" id="donut-total">₹0</span>
+                            </div>
+                        </div>
+                        <div class="category-legend" id="category-legend"></div>
+                    </div>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="card recent-card">
+                    <div class="card-header">
+                        <h3>Recent Transactions</h3>
+                        <button class="btn btn-ghost" id="view-all-btn">View All →</button>
+                    </div>
+                    <div class="transactions-list" id="recent-transactions"></div>
+                </div>
+            </section>
+
+            <!-- ====== EXPENSES VIEW ====== -->
+            <section class="view" id="view-expenses">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Expenses</h1>
+                        <p class="view-subtitle">Manage all your transactions</p>
+                    </div>
+                    <div class="view-header-actions">
+                        <button class="btn btn-ghost" id="import-csv-btn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"
+                                height="18">
+                                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                <polyline points="17 8 12 3 7 8" />
+                                <line x1="12" y1="3" x2="12" y2="15" />
+                            </svg>
+                            Import CSV
+                        </button>
+                        <button class="btn btn-primary" id="add-expense-btn-2">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                            Add Expense
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filters -->
+                <div class="filters-bar">
+                    <div class="search-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                        </svg>
+                        <input type="text" id="search-input" placeholder="Search expenses..." />
+                    </div>
+                    <select id="filter-category" class="filter-select">
+                        <option value="all">All Categories</option>
+                    </select>
+                    <input type="month" id="filter-month" class="filter-select" />
+                    <select id="sort-by" class="filter-select">
+                        <option value="date-desc">Newest First</option>
+                        <option value="date-asc">Oldest First</option>
+                        <option value="amount-desc">Highest Amount</option>
+                        <option value="amount-asc">Lowest Amount</option>
+                    </select>
+                </div>
+
+                <!-- Expenses List -->
+                <div class="expenses-list-container">
+                    <div class="expenses-list" id="expenses-list"></div>
+                    <div class="pagination-controls" id="pagination-controls" style="display:none;">
+                        <button class="btn btn-ghost btn-sm" id="prev-page">← Previous</button>
+                        <span id="page-info">Page 1</span>
+                        <button class="btn btn-ghost btn-sm" id="next-page">Next →</button>
+                    </div>
+                    <div class="empty-state" id="expenses-empty" style="display:none;">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="12" y1="18" x2="12" y2="12" />
+                                <line x1="9" y1="15" x2="15" y2="15" />
+                            </svg>
+                        </div>
+                        <h3>No expenses found</h3>
+                        <p>Start tracking your spending by adding your first expense.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== ANALYTICS VIEW ====== -->
+            <section class="view" id="view-analytics">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Analytics</h1>
+                        <p class="view-subtitle">Insights into your spending habits</p>
+                    </div>
+                </div>
+
+                <div class="analytics-grid">
+                    <div class="card chart-card analytics-full">
+                        <div class="card-header">
+                            <h3>Monthly Comparison</h3>
+                        </div>
+                        <div class="chart-container chart-container-lg">
+                            <canvas id="monthly-chart"></canvas>
+                        </div>
+                    </div>
+                    <div class="card category-breakdown-card">
+                        <div class="card-header">
+                            <h3>Category Breakdown</h3>
+                        </div>
+                        <div class="category-bars" id="category-bars"></div>
+                    </div>
+                    <div class="card top-expenses-card">
+                        <div class="card-header">
+                            <h3>Top Expenses</h3>
+                        </div>
+                        <div class="top-expenses-list" id="top-expenses-list"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ====== REPORTS VIEW ====== -->
+            <section class="view" id="view-reports">
+                <div class="view-header">
+                    <div>
+                        <h1 class="view-title">Monthly Reports</h1>
+                        <p class="view-subtitle">Generate and download expense reports</p>
+                    </div>
+                </div>
+
+                <div class="report-controls card">
+                    <div class="report-controls-inner">
+                        <div class="form-group">
+                            <label for="report-month">Select Month</label>
+                            <input type="month" id="report-month" class="filter-select" />
+                        </div>
+                        <div class="report-actions">
+                            <button class="btn btn-primary" id="generate-report-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"
+                                    height="18">
+                                    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                </svg>
+                                Generate Report
+                            </button>
+                            <button class="btn btn-ghost" id="download-csv-btn">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18"
+                                    height="18">
+                                    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                                    <polyline points="7 10 12 15 17 10" />
+                                    <line x1="12" y1="15" x2="12" y2="3" />
+                                </svg>
+                                Download CSV
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Report Data -->
+                <div id="report-content" style="display:none;">
+                    <div class="summary-cards report-summary">
+                        <div class="card summary-card">
+                            <div class="card-icon card-icon-purple">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M12 1v22M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6" />
+                                </svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Total Spent</span>
+                                <span class="card-value" id="report-total">₹0</span>
+                            </div>
+                        </div>
+                        <div class="card summary-card">
+                            <div class="card-icon card-icon-blue">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+                                    <line x1="16" y1="2" x2="16" y2="6" />
+                                    <line x1="8" y1="2" x2="8" y2="6" />
+                                    <line x1="3" y1="10" x2="21" y2="10" />
+                                </svg>
+                            </div>
+                            <div class="card-info">
+                                <span class="card-label">Transactions</span>
+                                <span class="card-value" id="report-count">0</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Category Breakdown</h3>
+                        </div>
+                        <div class="category-bars" id="report-category-bars"></div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>All Expenses</h3>
+                        </div>
+                        <div class="transactions-list" id="report-expenses-list"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Add/Edit Expense Modal -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="expense-modal">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Expense</h2>
+                <button class="modal-close" id="modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <form id="expense-form">
+                <input type="hidden" id="expense-id" />
+                <div class="form-group">
+                    <label for="expense-title">Title</label>
+                    <input type="text" id="expense-title" placeholder="e.g., Grocery shopping" required />
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="expense-amount">Amount (₹)</label>
+                        <input type="number" id="expense-amount" placeholder="0.00" min="0" step="0.01" required />
+                    </div>
+                    <div class="form-group">
+                        <label for="expense-date">Date</label>
+                        <input type="date" id="expense-date" required />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="expense-category">Category</label>
+                    <div class="category-grid" id="category-grid"></div>
+                </div>
+                <div class="form-group">
+                    <label for="expense-notes">Notes (optional)</label>
+                    <textarea id="expense-notes" placeholder="Any additional details..." rows="2"></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="btn btn-ghost" id="modal-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="modal-submit">Add Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div class="modal-overlay" id="delete-modal-overlay">
+        <div class="modal modal-sm">
+            <div class="modal-header">
+                <h2>Delete Expense</h2>
+            </div>
+            <p class="delete-message">Are you sure you want to delete <strong id="delete-expense-name"></strong>? This
+                action cannot be undone.</p>
+            <div class="form-actions">
+                <button class="btn btn-ghost" id="delete-cancel">Cancel</button>
+                <button class="btn btn-danger" id="delete-confirm">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- CSV Import Modal -->
+    <div class="modal-overlay" id="import-modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2>Import Expenses from CSV</h2>
+                <button class="modal-close" id="import-modal-close">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18" />
+                        <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
+                </button>
+            </div>
+            <div class="import-body">
+                <div class="import-dropzone" id="import-dropzone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48"
+                        height="48">
+                        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                        <polyline points="17 8 12 3 7 8" />
+                        <line x1="12" y1="3" x2="12" y2="15" />
+                    </svg>
+                    <p>Drag & drop a CSV file here, or <label class="link-btn" for="csv-file-input">browse</label></p>
+                    <p class="import-hint">Expected columns: Title, Amount, Category, Date, Notes</p>
+                    <input type="file" id="csv-file-input" accept=".csv" hidden />
+                </div>
+                <div class="import-preview" id="import-preview" style="display:none;">
+                    <div class="import-file-info">
+                        <span id="import-file-name">file.csv</span>
+                        <button class="btn btn-ghost btn-sm" id="import-clear">Change file</button>
+                    </div>
+                    <div class="import-preview-table" id="import-preview-table"></div>
+                </div>
+                <div class="import-result" id="import-result" style="display:none;"></div>
+                <div class="form-actions">
+                    <button class="btn btn-ghost" id="import-cancel">Cancel</button>
+                    <button class="btn btn-primary" id="import-submit" disabled>Import</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>
