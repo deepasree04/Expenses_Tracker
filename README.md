@@ -74,6 +74,20 @@ Expenses_Tracker/
 
 ---
 
+## 📸 Screenshots
+
+### 🔐 Authentication
+![Login Page](screenshots/login.png)
+![Register Page](screenshots/register.png)
+
+### 📊 Dashboard & Analytics
+![Dashboard](screenshots/dashboards.png)
+![Analytics](screenshots/analytics.png)
+
+### 📑 Reports
+![Reports](screenshots/reports.png)
+
+---
 ## 👤 Author
 
 **Deepasree Somasundharam**  
