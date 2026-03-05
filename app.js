@@ -6,13 +6,11 @@
 // ---- Configuration ----
 // Auto-detect API URL: when served via Django (port 8000), use relative path.
 // When served via VS Code Live Server or other static server, point to Django backend.
-const API_BASE = (() => {
-    const port = window.location.port;
+const API_BASE ='https://expenses-tracker-f6lp.onrender.com/api';
     // If served from Django (default port 8000), use relative URLs
-    if (port === '8000') return '/api';
+   
     // Otherwise, point to Django backend at 127.0.0.1
     return'https://expenses-tracker-f6lp.onrender.com/api';
-})();
 
 const MONTHLY_BUDGET = 50000;
 
