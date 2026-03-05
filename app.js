@@ -10,7 +10,6 @@ const API_BASE ='https://expenses-tracker-f6lp.onrender.com/api';
     // If served from Django (default port 8000), use relative URLs
    
     // Otherwise, point to Django backend at 127.0.0.1
-    return'https://expenses-tracker-f6lp.onrender.com/api';
 
 const MONTHLY_BUDGET = 50000;
 
