@@ -45,7 +45,7 @@ class AuthManager {
         localStorage.setItem('ef_access', tokens.access);
         localStorage.setItem('ef_refresh', tokens.refresh);
         localStorage.setItem('ef_user', JSON.stringify(user));
-    } 'ht
+    } 
 
     clearTokens() {
         this.accessToken = null;
