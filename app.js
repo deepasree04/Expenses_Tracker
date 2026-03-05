@@ -11,7 +11,7 @@ const API_BASE = (() => {
     // If served from Django (default port 8000), use relative URLs
     if (port === '8000') return '/api';
     // Otherwise, point to Django backend at 127.0.0.1
-    return 'http://127.0.0.1:8000/api';
+    return'https://expenses-tracker-f6lp.onrender.com/api';
 })();
 
 const MONTHLY_BUDGET = 50000;
@@ -45,7 +45,7 @@ class AuthManager {
         localStorage.setItem('ef_access', tokens.access);
         localStorage.setItem('ef_refresh', tokens.refresh);
         localStorage.setItem('ef_user', JSON.stringify(user));
-    }
+    } 'ht
 
     clearTokens() {
         this.accessToken = null;
