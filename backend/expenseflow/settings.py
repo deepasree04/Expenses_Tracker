@@ -23,6 +23,7 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
 ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
 
 INSTALLED_APPS = [
+    'corsheaders',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -31,7 +32,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Third party
     'rest_framework',
-    'corsheaders',
     # Local
     'accounts',
     'expenses',
@@ -103,6 +103,7 @@ CORS_ALLOWED_ORIGINS = os.environ.get(
     'http://localhost:8000,http://localhost:5500,http://localhost:5501,http://localhost:3000,http://127.0.0.1:5500,http://127.0.0.1:5501,http://127.0.0.1:3000'
 ).split(',')
 CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_ALL_ORIGINS = True
 
 # Security headers
 SECURE_BROWSER_XSS_FILTER = True
