@@ -5,6 +5,7 @@ Django settings for expenseflow project.
 import os
 from pathlib import Path
 from datetime import timedelta
+import dj_database_url
 try:
     from dotenv import load_dotenv
     load_dotenv()
@@ -18,9 +19,12 @@ SECRET_KEY = os.environ.get(
     'django-insecure-u(95ee*n4$g&^d$$)zv^%^bnk388uxz!jq35o*ur6ky**5u#ye'
 )
 
-DEBUG = os.environ.get('DJANGO_DEBUG', 'True').lower() in ('true', '1', 'yes')
+DEBUG = os.environ.get('DJANGO_DEBUG', 'False').lower() in ('true', '1', 'yes')
 
-ALLOWED_HOSTS = os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')
+ALLOWED_HOSTS = os.environ.get(
+    'DJANGO_ALLOWED_HOSTS',
+    'localhost,127.0.0.1,expenses-tracker-f61p.onrender.com'
+).split(',')
 
 INSTALLED_APPS = [
     'corsheaders',
@@ -40,6 +44,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -71,10 +76,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'expenseflow.wsgi.application'
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f'sqlite:///{BASE_DIR / "db.sqlite3"}',
+        conn_max_age=600,
+    )
 }
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -91,7 +96,14 @@ USE_TZ = True
 
 # Static files
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [FRONTEND_DIR]
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
+# CSRF
+CSRF_TRUSTED_ORIGINS = [
+    'https://expenses-tracker-f61p.onrender.com',
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

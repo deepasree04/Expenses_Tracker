@@ -1,0 +1,26 @@
+databases:
+  - name: expenseflow-db
+    plan: free
+    databaseName: expenseflow
+    user: expenseflow_user
+
+services:
+  - type: web
+    name: expenses-tracker
+    runtime: python
+    plan: free
+    buildCommand: "./build.sh"
+    startCommand: "cd backend && gunicorn expenseflow.wsgi:application --bind 0.0.0.0:$PORT"
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: DJANGO_ALLOWED_HOSTS
+        value: "expenses-tracker-f61p.onrender.com"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: expenseflow-db
+          property: connectionString
+      - key: PYTHON_VERSION
+        value: "3.12.0"
