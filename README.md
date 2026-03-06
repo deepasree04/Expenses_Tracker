@@ -28,6 +28,11 @@ Built with **Django (backend)** and a lightweight frontend, following **REST API
 
 ---
 
+## Live Demo
+https://deepasree04.github.io/Expenses_Tracker/
+
+---
+
 ## 📂 Project Structure
 Expenses_Tracker/
 │
