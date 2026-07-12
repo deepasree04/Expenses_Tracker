@@ -96,7 +96,6 @@ Expenses_Tracker/
 ## 👤 Author
 
 **Deepasree Somasundharam**  
-Final Year BCA Student  
-Aspiring Software Engineer 
+ 
 
 ---
